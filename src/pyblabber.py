@@ -82,8 +82,12 @@ def getAllBlabs():
 
     :return: 200 and (json) Appropriate response as defined in Blabber specs.
     """
-    # return all values (TODO: handle timeSince parameter)
-    return make_response(str(list(blabs.values())), 200)
+    if request.args.get('createdSince'):
+        # TODO: figure out this logic
+        return make_response(str(list(blabs.values())), 200)
+
+    else:
+        return make_response(str(list(blabs.values())), 200)
 
 # DELETE method to delete blab
 @flaskApp.route('/blabs/<id>', methods = ['DELETE'])
