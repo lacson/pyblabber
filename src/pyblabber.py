@@ -42,16 +42,16 @@ def addBlab():
 
     # verify that we got valid inputs
     if not reqBody["author"]:
-        return make_response({"error": True, "message": "An author is required."}, 400)
+        return make_response(json.dumps({"error": True, "message": "An author is required."}), 400)
 
     if not reqBody["author"]["email"]:
-        return make_response({"error": True, "message": "An email is required."}, 400)
+        return make_response(json.dumps({"error": True, "message": "An email is required."}), 400)
 
     if not reqBody["author"]["name"]:
-        return make_response({"error": True, "message": "A name is required."}, 400)
+        return make_response(json.dumps({"error": True, "message": "A name is required."}), 400)
 
     if not reqBody["message"]:
-        return make_response({"error": True, "message": "A message is required."}, 400)
+        return make_response(json.dumps({"error": True, "message": "A message is required."}), 400)
 
     # otherwise, create a UUID
     # (pydoc for UUID library guarantees us uniqueness)
@@ -86,7 +86,7 @@ def getAllBlabs():
     return make_response(str(list(blabs.values())), 200)
 
 # DELETE method to delete blab
-@flaskApp.route('/blabs/<id>', methods = ['REMOVE'])
+@flaskApp.route('/blabs/<id>', methods = ['DELETE'])
 def removeBlab(id):
     """
     Handles REMOVE request to remove specific blab at id.
@@ -98,10 +98,10 @@ def removeBlab(id):
     try:
         del blabs[id]
     except KeyError:
-        return make_response({}, 404)
+        return make_response(json.dumps({"message": "Blab not found."}), 404)
 
     # otherwise, return a 200 if we didn't get an error
-    return make_response({}, 200)
+    return make_response(json.dumps({"message": "Blab successfully deleted."}), 200)
 
 
 # if script is just run, start the app
