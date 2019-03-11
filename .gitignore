@@ -1,6 +1,9 @@
 # Pycharm trash
 .idea/
 
+# List of JSON to test with
+test_json.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
