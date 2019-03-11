@@ -22,7 +22,7 @@ blabs = {}
 @flaskApp.route('/')
 def home():
     """
-    Responds to port 5000 (Flask default)
+    Responds to root on default port
 
     :return: served hello world web page
     """
@@ -74,8 +74,6 @@ def addBlab():
     # return our made blab
     return make_response(blabToAdd, 201)
 
-
-
 # GET method to get all blabs
 @flaskApp.route('/blabs', methods = ['GET'])
 def getAllBlabs():
@@ -92,7 +90,7 @@ def removeBlab(id):
     """
     Handles REMOVE request to remove specific blab at id.
 
-    :param id: ID of blab to delete.
+    :param id: (str) UUID of blab to delete.
     :return: 200 if Blab was deleted successfully, 404 if not
     """
     # attempt to find blab
