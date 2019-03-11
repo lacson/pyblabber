@@ -6,7 +6,7 @@
     Contains main entrypoint for pyblabber.
     Hosts hello world test page at /.
 """
-from flask import Flask, make_response, request, jsonify, render_template
+from flask import Flask, make_response, request, render_template
 from os import getenv
 import json
 import uuid
