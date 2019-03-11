@@ -52,7 +52,14 @@ def removeBlab(id):
     :param id: ID of blab to delete.
     :return: 200 if Blab was deleted successfully, 404 if not
     """
-    pass # TODO: writeme
+    # attempt to find blab
+    try:
+        del blabs[id]
+    except KeyError:
+        return make_response({}, 404)
+
+    # otherwise, return a 200 if we didn't get an error
+    return make_response({}, 200)
 
 
 # if script is just run, start the app
