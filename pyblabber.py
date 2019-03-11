@@ -38,7 +38,7 @@ def addBlab():
              400 if request schema was not valid.
     """
     # get our request data
-    reqBody = request.json()
+    reqBody = request.get_json(force = True)
 
     # verify that we got valid inputs
     if not reqBody["author"]:
@@ -69,7 +69,7 @@ def addBlab():
     blabToAdd = json.dumps(blabToAdd)
 
     # add blab to dictionary
-    blabs[blabToAdd["id"]] = blabToAdd
+    blabs[uuidToAdd] = blabToAdd
 
     # return our made blab
     return make_response(blabToAdd, 201)
