@@ -15,6 +15,13 @@ WORKDIR /usr/src/app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Declare the port to use (and pass it as an env var to python)
+ARG port=5000
+ENV FLASK_PORT=${port}
+
+# Expose said port
+EXPOSE ${port}:${port}
+
 # Copy other files
 COPY . .
 
