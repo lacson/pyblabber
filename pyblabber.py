@@ -9,9 +9,14 @@
 from flask import Flask, render_template
 from os import getenv
 import json
+import uuid
+import time
 
 # create Flask instance
 flaskApp = Flask(__name__, template_folder="resources")
+
+# create our empty dict of blabs
+blabs = {}
 
 # host our hello world html page
 @flaskApp.route('/')
@@ -31,7 +36,31 @@ def addBlab():
 
     :return: 201 and (json) Appropriate response as defined in Blabber specs.
     """
-    pass # TODO: writeme
+    # get our request data
+    reqBody = request.json()
+
+    # otherwise, create a UUID
+    # (pydoc for UUID library guarantees us uniqueness)
+    uuidToAdd = str(uuid.uuid4())
+
+    # create the blab to store
+    blabToAdd = {
+                    "id"       : uuidToAdd,
+                    "postTime" : int(time.time()),
+                    "author"   : reqBody["author"],
+                    "message"  : reqBody["message"]
+                }
+
+    # turn our blab into a json object
+    blabToAdd = json.dumps(blabToAdd)
+
+    # add blab to dictionary
+    blabs[blabToAdd["id"]] = blabToAdd
+
+    # return our made blab
+    return make_response(blabToAdd, 201)
+
+
 
 # GET method to get all blabs
 @flaskApp.route('/blabs', methods = ['GET'])
