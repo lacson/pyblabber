@@ -34,10 +34,24 @@ def addBlab():
     """
     Handles POST request to add a blab.
 
-    :return: 201 and (json) Appropriate response as defined in Blabber specs.
+    :return: 201 and (json) Appropriate response as defined in Blabber specs,
+             400 if request schema was not valid.
     """
     # get our request data
     reqBody = request.json()
+
+    # verify that we got valid inputs
+    if not reqBody["author"]:
+        return make_response({"error": True, "message": "An author is required."}, 400)
+
+    if not reqBody["author"]["email"]:
+        return make_response({"error": True, "message": "An email is required."}, 400)
+
+    if not reqBody["author"]["name"]:
+        return make_response({"error": True, "message": "A name is required."}, 400)
+
+    if not reqBody["message"]:
+        return make_response({"error": True, "message": "A message is required."}, 400)
 
     # otherwise, create a UUID
     # (pydoc for UUID library guarantees us uniqueness)
