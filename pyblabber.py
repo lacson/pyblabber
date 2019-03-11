@@ -8,6 +8,7 @@
 """
 from flask import Flask, render_template
 from os import getenv
+import json
 
 # create Flask instance
 flaskApp = Flask(__name__, template_folder="resources")
@@ -21,6 +22,37 @@ def home():
     :return: served webpage
     """
     return render_template("hello_world.html")
+
+# POST method to add a new blab
+@flaskApp.route('/blabs', methods = ['POST'])
+def addBlab():
+    """
+    Handles POST request to add a blab.
+
+    :return: 201 and (json) Appropriate response as defined in Blabber specs.
+    """
+    pass # TODO: writeme
+
+# GET method to get all blabs
+@flaskApp.route('/blabs', methods = ['GET'])
+def getAllBlabs():
+    """
+    Handles GET request to get all blabs.
+
+    :return: 200 and (json) Appropriate response as defined in Blabber specs.
+    """
+    pass # TODO: writeme
+
+# DELETE method to delete blab
+@flaskApp.route('/blabs/<id>', methods = ['REMOVE'])
+def removeBlab(id):
+    """
+    Handles REMOVE request to remove specific blab at id.
+
+    :param id: ID of blab to delete.
+    :return: 200 if Blab was deleted successfully, 404 if not
+    """
+    pass # TODO: writeme
 
 
 # if script is just run, start the app
