@@ -83,8 +83,9 @@ def getAllBlabs():
     :return: 200 and (json) Appropriate response as defined in Blabber specs.
     """
     if request.args.get('createdSince'):
-        # TODO: figure out this logic
-        return make_response(str(list(blabs.values())), 200)
+        # use python comprehension here
+        responsesCreatedSince = [blab for blab in blabs if blab.postTime >= request.args.get('createdSince')]
+        return make_response(str(responsesCreatedSince), 200)
 
     else:
         return make_response(str(list(blabs.values())), 200)
