@@ -41,16 +41,24 @@ def addBlab():
     reqBody = request.get_json(force = True)
 
     # verify that we got valid inputs
-    if not reqBody["author"]:
+    try:
+        reqBody["author"]
+    except KeyError:
         return make_response(json.dumps({"error": True, "message": "An author is required."}), 400)
 
-    if not reqBody["author"]["email"]:
+    try:
+        reqBody["author"]["email"]
+    except KeyError:
         return make_response(json.dumps({"error": True, "message": "An email is required."}), 400)
 
-    if not reqBody["author"]["name"]:
+    try:
+        reqBody["author"]["name"]
+    except KeyError:
         return make_response(json.dumps({"error": True, "message": "A name is required."}), 400)
 
-    if not reqBody["message"]:
+    try:
+        reqBody["message"]
+    except KeyError:
         return make_response(json.dumps({"error": True, "message": "A message is required."}), 400)
 
     # otherwise, create a UUID
