@@ -13,7 +13,7 @@ WORKDIR /usr/src/app
 
 # Install the packages we need
 COPY src/requirements.txt ./
-RUN pip install --no-cache-dir -r src/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Declare the port to use (and pass it as an env var to python)
 ARG port=5000
