@@ -90,34 +90,25 @@ def getAllBlabs():
 
     :return: 200 and (json) Appropriate response as defined in Blabber specs.
     """
-    # if no query string, return all
+    # check and see if we have query argument
     if not request.query_string or request.args.get('createdSince') is None:
-        # workaround: use a loop to make valid JSON
-        allResponses = "["
+        createdSince = 0  # get all blabs this way
+    else:
+        createdSince = int(request.args.get('createdSince'))
 
-        for index, blab in enumerate(blabs.values()):
-            allResponses += blab
+    # workaround: use a loop to make valid JSON
+    responses = "["
+
+    for index, blab in enumerate(blabs.values()):
+        # only pull relevant blabs
+        if int(json.loads(blab)["postTime"]) >= createdSince:
+            responses += blab
             if index != len(blabs.values()) - 1:
-                allResponses += ", "
+                responses += ", "
 
-        allResponses += "]"
+    responses += "]"
 
-        return make_response(allResponses, 200)
-
-    if request.args.get('createdSince'):
-        # need to use the same workaround here TODO: make a function to do this
-        responsesCreatedSince = "["
-
-        for index, blab in enumerate(blabs.values()):
-            # only pull relevant blabs
-            if int(json.loads(blab)["postTime"]) >= int(request.args.get('createdSince')):
-                responsesCreatedSince += blab
-                if index != len(blabs.values()) - 1:
-                    responsesCreatedSince += ", "
-
-        responsesCreatedSince += "]"
-
-        return make_response(responsesCreatedSince, 200)
+    return make_response(responses, 200)
 
 
 # DELETE method to delete blab
