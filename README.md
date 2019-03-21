@@ -47,5 +47,6 @@ Commands for reference:
 
 Just a short list of things to do:
 
-* [ ] Handle custom time specification in `GET` method
+* [x] Handle custom time specification in `GET` method
+* [ ] Abstract `GET` method logic away
 * [ ] Write integration test script (and maybe containerize it)
