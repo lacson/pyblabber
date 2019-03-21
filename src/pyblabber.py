@@ -90,13 +90,35 @@ def getAllBlabs():
 
     :return: 200 and (json) Appropriate response as defined in Blabber specs.
     """
-    if request.args.get('createdSince'):
-        # use python comprehension here
-        responsesCreatedSince = [blab for blab in blabs if blab.postTime >= request.args.get('createdSince')]
-        return make_response(str(responsesCreatedSince), 200)
+    # if no query string, return all
+    if not request.query_string or request.args.get('createdSince') is None:
+        # workaround: use a loop to make valid JSON
+        allResponses = "["
 
-    else:
-        return make_response(str(list(blabs.values())), 200)
+        for index, blab in enumerate(blabs.values()):
+            allResponses += blab
+            if index != len(blabs.values()) - 1:
+                allResponses += ", "
+
+        allResponses += "]"
+
+        return make_response(allResponses, 200)
+
+    if request.args.get('createdSince'):
+        # need to use the same workaround here TODO: make a function to do this
+        responsesCreatedSince = "["
+
+        for index, blab in enumerate(blabs.values()):
+            # only pull relevant blabs
+            if int(json.loads(blab)["postTime"]) >= int(request.args.get('createdSince')):
+                responsesCreatedSince += blab
+                if index != len(blabs.values()) - 1:
+                    responsesCreatedSince += ", "
+
+        responsesCreatedSince += "]"
+
+        return make_response(responsesCreatedSince, 200)
+
 
 # DELETE method to delete blab
 @flaskApp.route('/blabs/<id>', methods = ['DELETE'])
