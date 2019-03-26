@@ -1,6 +1,10 @@
 # Pycharm trash
 .idea/
 
+# macOS trash
+*/.DS_Store
+.DS_Store
+
 # List of JSON to test with
 test_json.txt
 
