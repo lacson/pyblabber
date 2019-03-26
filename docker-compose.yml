@@ -1,0 +1,54 @@
+# Docker-compose.yml file for Pyblabber
+# Jonathan Lacson
+# CS 2304 Spring 2019
+
+version: "3.7"
+
+# define our images:
+services:
+  # should be plug and play, no intervention required
+  pyblabber-client:
+    image: vtcs2304s19/blabber-client
+    networks:
+      default:
+        aliases:
+          - client
+          - pyblabber-client
+  # our handmade container
+  pyblabber-api:
+    image: pyblabber:latest
+    build: .
+    volumes:
+      - ./src:/usr/src/app
+    networks:
+      default:
+        aliases:
+          - api
+          - pyblabber-api
+  # a generic mongo image
+  pyblabber-datastore:
+    image: mongo
+    environment:
+      - MONGO_DATA_DIR=/data/db
+    volumes:
+      - ./data:/data/db
+    networks:
+      default:
+        aliases:
+          - mongo
+          - db
+    ports:
+      - "27017:27017"
+  # taken from the traefik webdocs
+  traefik-proxy:
+    image: traefik
+    command: --api --docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+# define networks
+networks:
+  default:
