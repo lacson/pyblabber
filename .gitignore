@@ -1,6 +1,9 @@
 # Pycharm trash
 .idea/
 
+# development test DB
+data/
+
 # macOS trash
 */.DS_Store
 .DS_Store
