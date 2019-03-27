@@ -7,6 +7,7 @@
     Hosts hello world test page at /.
 """
 from flask import Flask, make_response, request, render_template
+from pymongo import MongoClient
 from os import getenv
 import json
 import uuid
@@ -15,8 +16,12 @@ import time
 # create Flask instance
 flaskApp = Flask(__name__, template_folder="resources")
 
-# create our empty dict of blabs
-blabs = {}
+# connect to mongo server
+mongo = MongoClient('mongo', 27017)
+
+# make blabs callable
+blabDB = mongo["blabs"]
+blabCollection = blabDB["blabs"]
 
 # host our hello world html page
 @flaskApp.route('/')
