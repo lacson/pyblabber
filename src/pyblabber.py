@@ -72,20 +72,20 @@ def addBlab():
 
     # create the blab to store
     blabToAdd = {
-                    "id"       : uuidToAdd,
+                    "_id"       : uuidToAdd,
                     "postTime" : int(time.time()),
                     "author"   : reqBody["author"],
                     "message"  : reqBody["message"]
                 }
 
-    # turn our blab into a json object
-    blabToAdd = json.dumps(blabToAdd)
+    # add blab to mongo
+    blabCollection.insert(blabToAdd)
 
-    # add blab to dictionary
-    blabs[uuidToAdd] = blabToAdd
+    # really hacky workaround (need to switch _id to id before returning to user)
+    blabToAdd["id"] = blabToAdd.pop("_id")
 
     # return our made blab
-    return make_response(blabToAdd, 201)
+    return make_response(json.dumps(blabToAdd), 201)
 
 # GET method to get all blabs
 @flaskApp.route('/blabs', methods = ['GET'])
