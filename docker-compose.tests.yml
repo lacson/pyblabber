@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  pyblabber-api:
+    image: pyblabber:latest
+    build: .
+    ports:
+      - 5000:5000
+    volumes:
+      - ./src:/usr/src/app
+    networks:
+      default:
+        aliases:
+          - api
+
+  pyblabber-datastore:
+    image: mongo
+    networks:
+      default:
+        aliases:
+          - mongo
+          - db
+
+  pyblabber-tests:
+    image: api-tests:latest
+    environment:
+      SERVICE_NAME: api
+      API_PORT: "5000" 
