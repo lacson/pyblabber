@@ -97,14 +97,24 @@ def getAllBlabs():
     else:
         createdSince = int(request.args.get('createdSince'))
 
+    # get all blabs
+    allBlabs = blabCollection.find({})
+
     # workaround: use a loop to make valid JSON
     responses = "["
 
-    for index, blab in enumerate(blabs.values()):
+    for index, blab in enumerate(allBlabs):
         # only pull relevant blabs
-        if int(json.loads(blab)["postTime"]) >= createdSince:
-            responses += blab
-            if index != len(blabs.values()) - 1:
+        if int(blab["postTime"]) >= createdSince:  # TODO: consider fixing this nonsense
+            # again, correct "_id" to "id"         # PyMongo should have methods that will fix
+            tempBlab = blab
+            tempBlab["id"] = tempBlab.pop("_id")
+
+            # add blab to our string
+            responses += json.dumps(tempBlab)
+
+            # only add comma if it's not the last blab
+            if index != allBlabs.count() - 1:
                 responses += ", "
 
     responses += "]"
@@ -121,10 +131,8 @@ def removeBlab(id):
     :param id: (str) UUID of blab to delete.
     :return: 200 if Blab was deleted successfully, 404 if not
     """
-    # attempt to find blab
-    try:
-        del blabs[id]
-    except KeyError:
+    # attempt to delete said blab if we find a matching ID
+    if blabCollection.find_one_and_delete(({'_id' : id})) is None:
         return make_response(json.dumps({"message": "Blab not found."}), 404)
 
     # otherwise, return a 200 if we didn't get an error
