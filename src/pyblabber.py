@@ -95,7 +95,10 @@ def getAllBlabs():
     if not request.query_string or request.args.get('createdSince') is None:
         createdSince = 0  # get all blabs this way
     else:
-        createdSince = int(request.args.get('createdSince'))
+        try:
+            createdSince = int(request.args.get('createdSince'))
+        except Exception:  # if we get garbage, don't crash
+            createdSince = 0
 
     # get all blabs
     allBlabs = blabCollection.find({})
