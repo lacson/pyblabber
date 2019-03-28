@@ -66,13 +66,9 @@ def addBlab():
     except KeyError:
         return make_response(json.dumps({"error": True, "message": "A message is required."}), 400)
 
-    # otherwise, create a UUID
-    # (pydoc for UUID library guarantees us uniqueness)
-    uuidToAdd = str(uuid.uuid4())
-
     # create the blab to store
     blabToAdd = {
-                    "_id"       : uuidToAdd,
+                    "_id"      : str(uuid.uuid4()),
                     "postTime" : int(time.time()),
                     "author"   : reqBody["author"],
                     "message"  : reqBody["message"]
