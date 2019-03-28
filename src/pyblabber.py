@@ -49,22 +49,22 @@ def addBlab():
     try:
         reqBody["author"]
     except KeyError:
-        return make_response(json.dumps({"error": True, "message": "An author is required."}), 400)
+        return make_response(json.dumps({"error": True, "message": "An author is required."}), 400, {'Content-Type': 'application/json'})
 
     try:
         reqBody["author"]["email"]
     except KeyError:
-        return make_response(json.dumps({"error": True, "message": "An email is required."}), 400)
+        return make_response(json.dumps({"error": True, "message": "An email is required."}), 400, {'Content-Type': 'application/json'})
 
     try:
         reqBody["author"]["name"]
     except KeyError:
-        return make_response(json.dumps({"error": True, "message": "A name is required."}), 400)
+        return make_response(json.dumps({"error": True, "message": "A name is required."}), 400, {'Content-Type': 'application/json'})
 
     try:
         reqBody["message"]
     except KeyError:
-        return make_response(json.dumps({"error": True, "message": "A message is required."}), 400)
+        return make_response(json.dumps({"error": True, "message": "A message is required."}), 400, {'Content-Type': 'application/json'})
 
     # create the blab to store
     blabToAdd = {
@@ -119,7 +119,7 @@ def getAllBlabs():
 
     responses += "]"
 
-    return make_response(responses, 200)
+    return make_response(responses, 200, {'Content-Type': 'application/json'})
 
 
 # DELETE method to delete blab
@@ -133,10 +133,10 @@ def removeBlab(id):
     """
     # attempt to delete said blab if we find a matching ID
     if blabCollection.find_one_and_delete(({'_id' : id})) is None:
-        return make_response(json.dumps({"message": "Blab not found."}), 404)
+        return make_response(json.dumps({"message": "Blab not found."}), 404, {'Content-Type': 'application/json'})
 
     # otherwise, return a 200 if we didn't get an error
-    return make_response(json.dumps({"message": "Blab successfully deleted."}), 200)
+    return make_response(json.dumps({"message": "Blab successfully deleted."}), 200, {'Content-Type': 'application/json'})
 
 
 # if script is just run, start the app
