@@ -14,6 +14,10 @@ services:
         aliases:
           - client
           - pyblabber-client
+    labels:
+      traefik.backend: "client"
+      traefik.port: "80"
+      traefik.frontend.rule: "PathPrefix:/"
   # our handmade container
   pyblabber-api:
     image: pyblabber:latest
@@ -25,6 +29,11 @@ services:
         aliases:
           - api
           - pyblabber-api
+    labels:
+      traefik.backend: "api"
+      traefik.port: 5000
+      traefik.frontend.rule: "PathPrefix:/api"
+      traefik.frontend.rule: "PathPrefixStrip:/api"
   # a generic mongo image
   pyblabber-datastore:
     image: mongo
