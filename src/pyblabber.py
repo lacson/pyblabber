@@ -23,6 +23,7 @@ mongo = MongoClient('mongo', 27017)
 blabDB = mongo["blabs"]
 blabCollection = blabDB["blabs"]
 
+
 # host our hello world html page
 @flaskApp.route('/')
 def home():
@@ -33,8 +34,9 @@ def home():
     """
     return render_template("hello_world.html")
 
+
 # POST method to add a new blab
-@flaskApp.route('/blabs', methods = ['POST'])
+@flaskApp.route('/blabs', methods=['POST'])
 def addBlab():
     """
     Handles POST request to add a blab.
@@ -43,48 +45,55 @@ def addBlab():
              400 if request schema was not valid.
     """
     # get our request data
-    reqBody = request.get_json(force = True)
+    reqBody = request.get_json(force=True)
 
     # verify that we got valid inputs
     try:
         reqBody["author"]
     except KeyError:
-        return make_response(json.dumps({"error": True, "message": "An author is required."}), 400, {'Content-Type': 'application/json'})
+        return make_response(json.dumps({"error": True,
+                                         "message": "An author is required."}),
+                                        400, {'Content-Type': 'application/json'})
 
     try:
         reqBody["author"]["email"]
     except KeyError:
-        return make_response(json.dumps({"error": True, "message": "An email is required."}), 400, {'Content-Type': 'application/json'})
+        return make_response(json.dumps({"error": True,
+                                         "message": "An email is required."}),
+                                        400, {'Content-Type': 'application/json'})
 
     try:
         reqBody["author"]["name"]
     except KeyError:
-        return make_response(json.dumps({"error": True, "message": "A name is required."}), 400, {'Content-Type': 'application/json'})
+        return make_response(json.dumps({"error": True,
+                                         "message": "A name is required."}),
+                                        400, {'Content-Type': 'application/json'})
 
     try:
         reqBody["message"]
     except KeyError:
-        return make_response(json.dumps({"error": True, "message": "A message is required."}), 400, {'Content-Type': 'application/json'})
+        return make_response(json.dumps({"error": True,
+                                         "message": "A message is required."}),
+                                        400, {'Content-Type': 'application/json'})
 
     # create the blab to store
-    blabToAdd = {
-                    "_id"      : str(uuid.uuid4()),
-                    "postTime" : int(time.time()),
-                    "author"   : reqBody["author"],
-                    "message"  : reqBody["message"]
-                }
+    blabToAdd = {"_id":      str(uuid.uuid4()),
+                 "postTime": int(time.time()),
+                 "author":   reqBody["author"],
+                 "message":  reqBody["message"]}
 
     # add blab to mongo
-    blabCollection.insert(blabToAdd)
+    blabCollection.insert_one(blabToAdd)
 
-    # really hacky workaround (need to switch _id to id before returning to user)
+    # really hacky workaround
+    # (need to switch _id to id before returning to user)
     blabToAdd["id"] = blabToAdd.pop("_id")
 
     # return our made blab
     return make_response(json.dumps(blabToAdd), 201)
 
 # GET method to get all blabs
-@flaskApp.route('/blabs', methods = ['GET'])
+@flaskApp.route('/blabs', methods=['GET'])
 def getAllBlabs():
     """
     Handles GET request to get all blabs.
@@ -126,7 +135,7 @@ def getAllBlabs():
 
 
 # DELETE method to delete blab
-@flaskApp.route('/blabs/<id>', methods = ['DELETE'])
+@flaskApp.route('/blabs/<id>', methods=['DELETE'])
 def removeBlab(id):
     """
     Handles REMOVE request to remove specific blab at id.
@@ -135,11 +144,13 @@ def removeBlab(id):
     :return: 200 if Blab was deleted successfully, 404 if not
     """
     # attempt to delete said blab if we find a matching ID
-    if blabCollection.find_one_and_delete(({'_id' : id})) is None:
-        return make_response(json.dumps({"message": "Blab not found."}), 404, {'Content-Type': 'application/json'})
+    if blabCollection.find_one_and_delete(({'_id': id})) is None:
+        return make_response(json.dumps({"message": "Blab not found."}),
+                                        404, {'Content-Type': 'application/json'})
 
     # otherwise, return a 200 if we didn't get an error
-    return make_response(json.dumps({"message": "Blab successfully deleted."}), 200, {'Content-Type': 'application/json'})
+    return make_response(json.dumps({"message": "Blab successfully deleted."}),
+                                    200, {'Content-Type': 'application/json'})
 
 
 # if script is just run, start the app
