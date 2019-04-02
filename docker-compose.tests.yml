@@ -22,7 +22,8 @@ services:
           - db
 
   pyblabber-tests:
-    image: api-tests:latest
+    image: vtcs2304s19/blabber-api-tests
     environment:
       SERVICE_NAME: api
-      API_PORT: "5000" 
+      API_PORT: "5000"
+      SLEEP_TIMER: 20 
