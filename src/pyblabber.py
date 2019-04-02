@@ -90,7 +90,8 @@ def addBlab():
     blabToAdd["id"] = blabToAdd.pop("_id")
 
     # return our made blab
-    return make_response(json.dumps(blabToAdd), 201)
+    return make_response(json.dumps(blabToAdd), 201, {'Content-Type': 'application/json'})
+
 
 # GET method to get all blabs
 @flaskApp.route('/blabs', methods=['GET'])
