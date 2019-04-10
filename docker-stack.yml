@@ -1,0 +1,79 @@
+# docker-stack.yml file for Pyblabber
+# Jonathan Lacson
+# CS 2304 Spring 2019
+
+version: "3.7"
+
+# define our images:
+services:
+  # should be plug and play, no intervention required
+  pyblabber-client:
+    image: vtcs2304s19/blabber-client
+    networks:
+      default:
+        aliases:
+          - client
+          - pyblabber-client
+    deploy:
+      replicas: 2
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        traefik.backend: "client"
+        traefik.port: "80"
+        traefik.frontend.rule: "PathPrefix:/"
+  # our handmade container
+  pyblabber-api:
+    image: lacson/pyblabber:latest
+  # ports:
+  #   - 5000:5000
+    networks:
+      default:
+        aliases:
+          - api
+          - pyblabber-api
+    deploy:
+      replicas: 2
+      placement:
+        constraints: [node.role == worker]
+      labels:
+        traefik.backend: "api"
+        traefik.port: 5000
+        traefik.frontend.rule: "PathPrefix:/api"
+        traefik.frontend.rule: "PathPrefixStrip:/api"
+  # a generic mongo image
+  pyblabber-datastore:
+    image: mongo
+    environment:
+      - MONGO_DATA_DIR=/data/db
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+      labels:
+          traefik.port: 27017
+    networks:
+      default:
+        aliases:
+          - mongo
+          - db
+  # ports:
+  #   - "27017:27017"
+  # taken from the traefik webdocs
+  traefik-proxy:
+    image: traefik
+    command: --api --docker --docker.swarmmode --docker.watch
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        traefik.port: 80
+        traefik.port: 8080
+
+# define networks
+networks:
+  default:
