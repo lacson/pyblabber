@@ -32,6 +32,7 @@ services:
         aliases:
           - api
           - pyblabber-api
+    read_only: true
     deploy:
       replicas: 2
       placement:
