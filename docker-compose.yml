@@ -21,6 +21,9 @@ services:
   # our handmade container
   pyblabber-api:
     image: pyblabber:latest
+    secrets:
+      - MONGO_ROOT_USERNAME
+      - MONGO_ROOT_PASSWORD
     read_only: true
     healthcheck:
       test: curl http://localhost:5000/status
@@ -47,6 +50,11 @@ services:
     image: mongo
     environment:
       - MONGO_DATA_DIR=/data/db
+      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/MONGO_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/MONGO_ROOT_PASSWORD
+    secrets:
+      - MONGO_ROOT_USERNAME
+      - MONGO_ROOT_PASSWORD
     volumes:
       - ./data:/data/db
     networks:
@@ -69,3 +77,10 @@ services:
 # define networks
 networks:
   default:
+
+# define secrets
+secrets:
+  MONGO_ROOT_USERNAME:
+    file: mongo_username.txt
+  MONGO_ROOT_PASSWORD:
+    file: mongo_password.txt
