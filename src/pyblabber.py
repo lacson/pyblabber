@@ -13,11 +13,63 @@ import json
 import uuid
 import time
 
+def pullSecrets():
+    """
+    Attempts to pull username and password secrets.
+    Exits script if cannot be found.
+
+    :return: username (str) and password (str)
+    """
+    # try to get username
+    username = extractSecret("MONGO_ROOT_USERNAME")
+
+    # try to get password
+    password = extractSecret("MONGO_ROOT_PASSWORD")
+
+    # make sure we actually got strings
+    if not username or not password:
+        exit()
+
+    else:
+        return username, password
+
+
+def extractSecret(file):
+    """
+    Attempts to pull docker secret.
+    Assumes all secrets are stored in /run/secrets.
+
+    :param file: name of file to try and read from
+    :return: (str) of secret if successful, (bool False) if not
+    """
+    # prepend secret path to file
+    file = "/run/secrets/" + file
+
+    # make sure file exists
+    if os.path.exists(file) is False:
+        print("Error: could not find secret file %s, check configuration" % file)
+        return False
+
+    # if file exists, read it
+    with open(file) as openedFile:
+        tempStr = openedFile.read()
+
+    # clean up string
+    tempStr = tempStr.rstrip()
+
+    # return string
+    return tempStr
+
 # create Flask instance
 flaskApp = Flask(__name__, template_folder="resources")
 
+# attempt to get our secrets
+extractedUser, extractedPass = pullSecrets()
+
 # connect to mongo server
-mongo = pymongo.MongoClient('mongo', 27017)
+mongo = pymongo.MongoClient('mongo', username=extractedUser,
+                                     password=extractedPass,
+                                     port=27017)
 
 # make blabs callable
 blabDB = mongo["blabs"]
