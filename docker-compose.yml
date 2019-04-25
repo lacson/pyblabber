@@ -21,6 +21,12 @@ services:
   # our handmade container
   pyblabber-api:
     image: pyblabber:latest
+    read_only: true
+    healthcheck:
+      test: curl http://localhost:5000/status
+      interval: 90s
+      timeout: 10s
+      retries: 2
     build: .
     volumes:
       - ./src:/usr/src/app

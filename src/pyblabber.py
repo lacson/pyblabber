@@ -7,7 +7,7 @@
     Hosts hello world test page at /.
 """
 from flask import Flask, make_response, request, render_template
-from pymongo import MongoClient
+import pymongo
 from os import getenv
 import json
 import uuid
@@ -17,11 +17,30 @@ import time
 flaskApp = Flask(__name__, template_folder="resources")
 
 # connect to mongo server
-mongo = MongoClient('mongo', 27017)
+mongo = pymongo.MongoClient('mongo', 27017)
 
 # make blabs callable
 blabDB = mongo["blabs"]
 blabCollection = blabDB["blabs"]
+
+
+# perform database health check
+@flaskApp.route('/status')
+def healthCheck():
+    """
+    Simple URL to pull container health checks.
+
+    :return: 0 if healthy, 1 if not healthy
+    """
+    # try to reconnect to the server (1ms timeout)
+    try:
+        mongo = pymongo.MongoClient('mongo', 27017, 
+            serverSelectionTimeoutMS=1)
+        mongo.server_info()
+    except pymongo.errors.ServerSelectionTimeoutError:
+        return make_response('1')
+    else:
+        return make_response('0')
 
 
 # host our hello world html page
