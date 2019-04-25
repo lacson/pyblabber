@@ -3,6 +3,8 @@
 
 # development test DB
 data/
+mongo_username.txt
+mongo_password.txt
 
 # macOS trash
 */.DS_Store
