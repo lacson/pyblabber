@@ -8,7 +8,7 @@
 """
 from flask import Flask, make_response, request, render_template
 import pymongo
-from os import getenv
+import os
 import json
 import uuid
 import time
@@ -229,9 +229,9 @@ def removeBlab(id):
 if __name__ == "__main__":
 
     # if we don't find defined flask_port, use the default
-    if not getenv("FLASK_PORT"):
+    if not os.getenv("FLASK_PORT"):
         portEnv = 5000
     else:
-        portEnv = getenv("FLASK_PORT")
+        portEnv = os.getenv("FLASK_PORT")
 
     flaskApp.run(host='0.0.0.0', port=portEnv, debug=True)
