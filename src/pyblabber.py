@@ -75,12 +75,12 @@ mongo = pymongo.MongoClient('mongo', username=extractedUser,
 blabDB = mongo["blabs"]
 blabCollection = blabDB["blabs"]
 
-
 # perform database health check
 @flaskApp.route('/status')
 def healthCheck():
     """
     Simple URL to pull container health checks.
+    For our purposes, healthy = can poll mongoDB
 
     :return: 0 if healthy, 1 if not healthy
     """
@@ -224,10 +224,8 @@ def removeBlab(id):
     return make_response(json.dumps({"message": "Blab successfully deleted."}),
                                     200, {'Content-Type': 'application/json'})
 
-
 # if script is just run, start the app
 if __name__ == "__main__":
-
     # if we don't find defined flask_port, use the default
     if not os.getenv("FLASK_PORT"):
         portEnv = 5000
