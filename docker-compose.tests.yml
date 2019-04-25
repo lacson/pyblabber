@@ -3,6 +3,9 @@ version: "3.7"
 services:
   pyblabber-api:
     image: pyblabber:latest
+    secrets:
+      - MONGO_ROOT_USERNAME
+      - MONGO_ROOT_PASSWORD
     build: .
     ports:
       - 5000:5000
@@ -20,6 +23,12 @@ services:
         aliases:
           - mongo
           - db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/MONGO_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/MONGO_ROOT_PASSWORD
+    secrets:
+      - MONGO_ROOT_USERNAME
+      - MONGO_ROOT_PASSWORD
 
   pyblabber-tests:
     image: vtcs2304s19/blabber-api-tests
@@ -27,3 +36,10 @@ services:
       SERVICE_NAME: api
       API_PORT: "5000"
       SLEEP_TIMER: 20 
+
+# define secrets
+secrets:
+  MONGO_ROOT_USERNAME:
+    file: mongo_username.txt
+  MONGO_ROOT_PASSWORD:
+    file: mongo_password.txt

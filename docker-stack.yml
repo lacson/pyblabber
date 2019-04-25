@@ -25,6 +25,9 @@ services:
   # our handmade container
   pyblabber-api:
     image: lacson/pyblabber:latest
+    secrets:
+      - MONGO_ROOT_USERNAME
+      - MONGO_ROOT_PASSWORD
   # ports:
   #   - 5000:5000
     networks:
@@ -47,6 +50,11 @@ services:
     image: mongo
     environment:
       - MONGO_DATA_DIR=/data/db
+      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/MONGO_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/MONGO_ROOT_PASSWORD
+    secrets:
+      - MONGO_ROOT_USERNAME
+      - MONGO_ROOT_PASSWORD
     deploy:
       placement:
         constraints: [node.role == worker]
@@ -78,3 +86,9 @@ services:
 # define networks
 networks:
   default:
+
+secrets:
+  MONGO_ROOT_USERNAME:
+    file: mongo_username.txt
+  MONGO_ROOT_PASSWORD:
+    file: mongo_password.txt
