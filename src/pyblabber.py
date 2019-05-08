@@ -112,6 +112,7 @@ def home():
 
 # POST method to add a new blab
 @flaskApp.route('/blabs', methods=['POST'])
+@metrics.counter('total_blabs_created_count', 'Number of blabs created')
 def addBlab():
     """
     Handles POST request to add a blab.
