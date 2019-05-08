@@ -7,6 +7,7 @@
     Hosts hello world test page at /.
 """
 from flask import Flask, make_response, request, render_template
+from prometheus_flask_exporter import PrometheusMetrics
 import pymongo
 import os
 import json
@@ -62,6 +63,9 @@ def extractSecret(file):
 
 # create Flask instance
 flaskApp = Flask(__name__, template_folder="resources")
+
+# begin Prometheus endpoint
+metrics = PrometheusMetrics(flaskApp)
 
 # attempt to get our secrets
 extractedUser, extractedPass = pullSecrets()
@@ -231,5 +235,8 @@ if __name__ == "__main__":
         portEnv = 5000
     else:
         portEnv = os.getenv("FLASK_PORT")
+
+    # workaround for metrics in debug mode: set an env var
+    os.environ["DEBUG_METRICS"] = "1"
 
     flaskApp.run(host='0.0.0.0', port=portEnv, debug=True)
