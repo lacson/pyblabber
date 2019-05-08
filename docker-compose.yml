@@ -43,8 +43,7 @@ services:
     labels:
       traefik.backend: "api"
       traefik.port: 5000
-      traefik.frontend.rule: "PathPrefix:/api"
-      traefik.frontend.rule: "PathPrefixStrip:/api"
+      traefik.frontend.rule: "PathPrefix:/api;PathPrefixStrip:/api"
   # a generic mongo image
   pyblabber-datastore:
     image: mongo
